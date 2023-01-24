@@ -59,7 +59,10 @@ public class Ec2Service {
         return instanceId;
     }
 
-    static class CreateInstanceRequest {
+    /**
+     * The data model to create an aws ec2 instance.
+     */
+    public static class CreateInstanceRequest {
         private Region region;
 
         private String name;

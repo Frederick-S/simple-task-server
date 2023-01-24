@@ -4,10 +4,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 /**
- * The task definition entity.
+ * The task entity.
  */
 @Entity
-public class TaskDefinition extends BaseEntity {
+public class Task extends BaseEntity {
     @Column
     private String name;
 
