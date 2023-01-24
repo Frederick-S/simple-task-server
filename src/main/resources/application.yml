@@ -10,10 +10,21 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+  session:
+    redis:
+      save-mode: on_set_attribute
+      flush-mode: on_save
+      namespace: simpletask:session
   data:
     redis:
       repositories:
         enabled: false
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+server:
+  servlet:
+    session:
+      timeout: 24h
 management:
   endpoints:
     web:
