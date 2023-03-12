@@ -22,7 +22,7 @@ public class TaskSchedulerService {
 
     private static final TimeZone utcTimeZone = TimeZone.getTimeZone(ZoneId.of("UTC"));
 
-    private Map<String, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+    private final Map<String, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
     @Autowired
     private TaskScheduler taskScheduler;
