@@ -28,35 +28,36 @@ public class Ec2Service {
      * @return Id of the new instance
      */
     public String createInstance(CreateInstanceRequest createInstanceRequest) {
-        Ec2Client ec2Client = Ec2Client.builder()
+        try (Ec2Client ec2Client = Ec2Client.builder()
                 .region(createInstanceRequest.getRegion())
                 .credentialsProvider(DefaultCredentialsProvider.create())
-                .build();
-        LaunchTemplateSpecification launchTemplateSpecification =
-                LaunchTemplateSpecification.builder()
-                        .launchTemplateId(createInstanceRequest.getLaunchTemplateId())
-                        .version(createInstanceRequest.getLaunchTemplateVersion())
-                        .build();
-        byte[] startupCommand = createInstanceRequest.getStartupCommand().getBytes();
-        RunInstancesRequest runInstancesRequest = RunInstancesRequest.builder()
-                .maxCount(1)
-                .minCount(1)
-                .userData(Base64.getEncoder().encodeToString(startupCommand))
-                .launchTemplate(launchTemplateSpecification)
-                .build();
-        RunInstancesResponse runInstancesResponse = ec2Client.runInstances(runInstancesRequest);
-        String instanceId = runInstancesResponse.instances().get(0).instanceId();
-        Tag tag = Tag.builder()
-                .key("Name")
-                .value(createInstanceRequest.getName())
-                .build();
-        CreateTagsRequest createTagsRequest = CreateTagsRequest.builder()
-                .resources(instanceId)
-                .tags(tag)
-                .build();
-        ec2Client.createTags(createTagsRequest);
+                .build()) {
+            LaunchTemplateSpecification launchTemplateSpecification =
+                    LaunchTemplateSpecification.builder()
+                            .launchTemplateId(createInstanceRequest.getLaunchTemplateId())
+                            .version(createInstanceRequest.getLaunchTemplateVersion())
+                            .build();
+            byte[] startupCommand = createInstanceRequest.getStartupCommand().getBytes();
+            RunInstancesRequest runInstancesRequest = RunInstancesRequest.builder()
+                    .maxCount(1)
+                    .minCount(1)
+                    .userData(Base64.getEncoder().encodeToString(startupCommand))
+                    .launchTemplate(launchTemplateSpecification)
+                    .build();
+            RunInstancesResponse runInstancesResponse = ec2Client.runInstances(runInstancesRequest);
+            String instanceId = runInstancesResponse.instances().get(0).instanceId();
+            Tag tag = Tag.builder()
+                    .key("Name")
+                    .value(createInstanceRequest.getName())
+                    .build();
+            CreateTagsRequest createTagsRequest = CreateTagsRequest.builder()
+                    .resources(instanceId)
+                    .tags(tag)
+                    .build();
+            ec2Client.createTags(createTagsRequest);
 
-        return instanceId;
+            return instanceId;
+        }
     }
 
     /**
