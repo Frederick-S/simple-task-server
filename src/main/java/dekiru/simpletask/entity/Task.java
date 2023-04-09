@@ -21,7 +21,7 @@ public class Task extends BaseEntity {
     private String startupScript;
 
     @Column
-    private Integer timeoutMinutes;
+    private Integer timeoutSeconds;
 
     public String getName() {
         return name;
@@ -55,11 +55,11 @@ public class Task extends BaseEntity {
         this.startupScript = startupScript;
     }
 
-    public Integer getTimeoutMinutes() {
-        return timeoutMinutes;
+    public Integer getTimeoutSeconds() {
+        return timeoutSeconds;
     }
 
-    public void setTimeoutMinutes(Integer timeoutMinutes) {
-        this.timeoutMinutes = timeoutMinutes;
+    public void setTimeoutSeconds(Integer timeoutMinutes) {
+        this.timeoutSeconds = timeoutMinutes;
     }
 }
