@@ -25,6 +25,9 @@ server:
   servlet:
     session:
       timeout: 24h
+simpletask:
+  passwordStrength: ${SIMPLE_TASK_PASSWORD_STRENGTH:10}
+  allowedOrigin: ${SIMPLE_TASK_ALLOWED_ORIGIN:http://localhost:5000}
 management:
   endpoints:
     web:
