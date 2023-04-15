@@ -1,38 +1,50 @@
-package dekiru.simpletask.entity;
+package dekiru.simpletask.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 /**
- * The task entity.
+ * The data transfer object that represents a task.
  */
-@Entity
-public class Task extends BaseEntity {
-    @Column
+public class TaskDto implements Serializable {
+    private Long id;
+
+    @NotBlank(message = "Name could not be empty")
+    @Size(max = 100, message = "The length of name could not be longer than 100")
     private String name;
 
-    @Column
+    @NotBlank(message = "launchTemplateId could not be empty")
+    @Size(max = 100, message = "The length of launchTemplateId could not be longer than 100")
     private String launchTemplateId;
 
-    @Column
+    @NotBlank(message = "launchTemplateVersion could not be empty")
+    @Size(max = 10, message = "The length of launchTemplateVersion could not be longer than 10")
     private String launchTemplateVersion;
 
-    @Column(columnDefinition = "text")
+    @NotBlank(message = "startupScript could not be empty")
     private String startupScript;
 
-    @Column
+    @NotBlank(message = "timeoutSeconds could not empty")
+    @Min(value = 1, message = "The value of timeoutSeconds should be greater than 0")
     private Integer timeoutSeconds;
 
-    @Column
     private Long createdBy;
 
-    @Column
     private Instant createdAt;
 
-    @Column
     private Instant updatedAt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -70,8 +82,8 @@ public class Task extends BaseEntity {
         return timeoutSeconds;
     }
 
-    public void setTimeoutSeconds(Integer timeoutMinutes) {
-        this.timeoutSeconds = timeoutMinutes;
+    public void setTimeoutSeconds(Integer timeoutSeconds) {
+        this.timeoutSeconds = timeoutSeconds;
     }
 
     public Long getCreatedBy() {
