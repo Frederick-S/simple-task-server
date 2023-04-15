@@ -1,16 +1,17 @@
-package dekiru.simpletask.service;
+package dekiru.simpletask.service.ec2;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.CreateTagsRequest;
 import software.amazon.awssdk.services.ec2.model.LaunchTemplateSpecification;
 import software.amazon.awssdk.services.ec2.model.RunInstancesRequest;
 import software.amazon.awssdk.services.ec2.model.RunInstancesResponse;
 import software.amazon.awssdk.services.ec2.model.Tag;
+import software.amazon.awssdk.services.ec2.model.TerminateInstancesRequest;
+import software.amazon.awssdk.services.ec2.model.TerminateInstancesResponse;
 
 import java.util.Base64;
 
@@ -61,57 +62,23 @@ public class Ec2Service {
     }
 
     /**
-     * The data model to create an aws ec2 instance.
+     * Destroy an aws ec2 instance.
+     *
+     * @param destroyInstanceRequest {@link DestroyInstanceRequest}
      */
-    public static class CreateInstanceRequest {
-        private Region region;
+    public boolean destroyInstance(DestroyInstanceRequest destroyInstanceRequest) {
+        try (Ec2Client ec2Client = Ec2Client.builder()
+                .region(destroyInstanceRequest.getRegion())
+                .credentialsProvider(DefaultCredentialsProvider.create())
+                .build()) {
+            TerminateInstancesRequest terminateInstancesRequest =
+                    TerminateInstancesRequest.builder()
+                            .instanceIds(destroyInstanceRequest.getInstanceId())
+                            .build();
+            TerminateInstancesResponse terminateInstancesResponse =
+                    ec2Client.terminateInstances(terminateInstancesRequest);
 
-        private String name;
-
-        private String launchTemplateId;
-
-        private String launchTemplateVersion;
-
-        private String startupCommand;
-
-        public Region getRegion() {
-            return region;
-        }
-
-        public void setRegion(Region region) {
-            this.region = region;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getLaunchTemplateId() {
-            return launchTemplateId;
-        }
-
-        public void setLaunchTemplateId(String launchTemplateId) {
-            this.launchTemplateId = launchTemplateId;
-        }
-
-        public String getLaunchTemplateVersion() {
-            return launchTemplateVersion;
-        }
-
-        public void setLaunchTemplateVersion(String launchTemplateVersion) {
-            this.launchTemplateVersion = launchTemplateVersion;
-        }
-
-        public String getStartupCommand() {
-            return startupCommand;
-        }
-
-        public void setStartupCommand(String startupCommand) {
-            this.startupCommand = startupCommand;
+            return terminateInstancesResponse.hasTerminatingInstances();
         }
     }
 }
