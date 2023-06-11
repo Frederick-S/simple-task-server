@@ -1,7 +1,9 @@
 package dekiru.simpletask.controller;
 
+import dekiru.simpletask.Constant;
 import dekiru.simpletask.annotation.LoginRequired;
 import dekiru.simpletask.annotation.Me;
+import dekiru.simpletask.dto.ResponseError;
 import dekiru.simpletask.dto.TaskDto;
 import dekiru.simpletask.dto.UserDto;
 import dekiru.simpletask.entity.Task;
@@ -12,8 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -55,5 +59,31 @@ public class TaskController extends BaseController {
         taskDto.setUpdatedAt(now);
 
         return new ResponseEntity<>(taskDto, HttpStatus.CREATED);
+    }
+
+    /**
+     * Get tasks.
+     *
+     * @param page     The page number
+     * @param pageSize Count of tasks returned in each page
+     * @return List of {@link TaskDto}
+     */
+    @GetMapping("/tasks")
+    public ResponseEntity<?> getTasks(@RequestParam int page, @RequestParam int pageSize) {
+        if (page <= 0) {
+            return new ResponseEntity<>(new ResponseError("Invalid page"), HttpStatus.BAD_REQUEST);
+        }
+
+        if (pageSize <= 0) {
+            return new ResponseEntity<>(
+                    new ResponseError("Invalid pageSize"), HttpStatus.BAD_REQUEST);
+        } else if (pageSize > Constant.MAX_PAGE_SIZE) {
+            return new ResponseEntity<>(
+                    new ResponseError(
+                            String.format("pageSize exceeds the limit %d", Constant.MAX_PAGE_SIZE)),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        return null;
     }
 }
