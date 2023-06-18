@@ -29,6 +29,9 @@ public class Task extends BaseEntity {
     private Long createdBy;
 
     @Column
+    private Long updatedBy;
+
+    @Column
     private Instant createdAt;
 
     @Column
@@ -80,6 +83,14 @@ public class Task extends BaseEntity {
 
     public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public Long getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public Instant getCreatedAt() {

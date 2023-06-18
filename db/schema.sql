@@ -30,6 +30,7 @@ CREATE TABLE `task` (
   `startup_script` text NOT NULL,
   `timeout_seconds` int NOT NULL,
   `created_by` bigint NOT NULL,
+  `updated_by` bigint NOT NULL,
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
@@ -49,7 +50,7 @@ CREATE TABLE `user` (
   `encrypted_password` varchar(255) NOT NULL,
   `created_at` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -61,4 +62,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-11  8:51:02
+-- Dump completed on 2023-06-18  2:39:06

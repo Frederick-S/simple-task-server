@@ -8,19 +8,17 @@ import dekiru.simpletask.dto.TaskDto;
 import dekiru.simpletask.dto.UserDto;
 import dekiru.simpletask.entity.Task;
 import dekiru.simpletask.repository.TaskRepository;
+import dekiru.simpletask.repository.extend.TaskRepositoryExtend;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.List;
 
 /**
  * The api routes for tasks.
@@ -31,6 +29,9 @@ public class TaskController extends BaseController {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private TaskRepositoryExtend taskRepositoryExtend;
 
     /**
      * Create a new task.
@@ -49,12 +50,15 @@ public class TaskController extends BaseController {
         task.setLaunchTemplateVersion(taskDto.getLaunchTemplateVersion());
         task.setTimeoutSeconds(taskDto.getTimeoutSeconds());
         task.setCreatedBy(me.getId());
+        task.setUpdatedBy(me.getId());
         task.setCreatedAt(now);
         task.setUpdatedAt(now);
 
         taskRepository.save(task);
 
+        taskDto.setId(task.getId());
         taskDto.setCreatedBy(me.getId());
+        taskDto.setUpdatedBy(me.getId());
         taskDto.setCreatedAt(now);
         taskDto.setUpdatedAt(now);
 
@@ -84,6 +88,24 @@ public class TaskController extends BaseController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        return null;
+        List<TaskDto> taskDtos = taskRepositoryExtend.findAll(page, pageSize)
+                .stream()
+                .map(task -> {
+                    TaskDto taskDto = new TaskDto();
+                    taskDto.setId(task.getId());
+                    taskDto.setName(task.getName());
+                    taskDto.setLaunchTemplateId(task.getLaunchTemplateId());
+                    taskDto.setLaunchTemplateVersion(task.getLaunchTemplateVersion());
+                    taskDto.setTimeoutSeconds(task.getTimeoutSeconds());
+                    taskDto.setCreatedBy(task.getCreatedBy());
+                    taskDto.setUpdatedBy(task.getUpdatedBy());
+                    taskDto.setCreatedAt(task.getCreatedAt());
+                    taskDto.setUpdatedAt(task.getUpdatedAt());
+
+                    return taskDto;
+                })
+                .toList();
+
+        return new ResponseEntity<>(taskDtos, HttpStatus.OK);
     }
 }

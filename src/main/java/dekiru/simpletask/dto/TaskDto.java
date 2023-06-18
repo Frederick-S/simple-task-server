@@ -34,6 +34,8 @@ public class TaskDto implements Serializable {
 
     private Long createdBy;
 
+    private Long updatedBy;
+
     private Instant createdAt;
 
     private Instant updatedAt;
@@ -92,6 +94,14 @@ public class TaskDto implements Serializable {
 
     public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public Long getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public Instant getCreatedAt() {
