@@ -53,6 +53,7 @@ public class TaskController extends BaseController {
         task.setLaunchTemplateId(taskDto.getLaunchTemplateId());
         task.setLaunchTemplateVersion(taskDto.getLaunchTemplateVersion());
         task.setTimeoutSeconds(taskDto.getTimeoutSeconds());
+        task.setStatus(taskDto.getStatus());
         task.setCreatedBy(me.getId());
         task.setUpdatedBy(me.getId());
         task.setCreatedAt(now);
@@ -101,6 +102,7 @@ public class TaskController extends BaseController {
                     taskDto.setLaunchTemplateId(task.getLaunchTemplateId());
                     taskDto.setLaunchTemplateVersion(task.getLaunchTemplateVersion());
                     taskDto.setTimeoutSeconds(task.getTimeoutSeconds());
+                    taskDto.setStatus(task.getStatus());
                     taskDto.setCreatedBy(task.getCreatedBy());
                     taskDto.setUpdatedBy(task.getUpdatedBy());
                     taskDto.setCreatedAt(task.getCreatedAt());

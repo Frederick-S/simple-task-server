@@ -2,6 +2,7 @@ package dekiru.simpletask.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
@@ -31,6 +32,10 @@ public class TaskDto implements Serializable {
     @NotBlank(message = "timeoutSeconds could not empty")
     @Min(value = 1, message = "The value of timeoutSeconds should be greater than 0")
     private Integer timeoutSeconds;
+
+    @NotNull(message = "status could not be null")
+    @Min(value = 1, message = "The value of status should be greater than 0")
+    private Integer status;
 
     private Long createdBy;
 
@@ -86,6 +91,14 @@ public class TaskDto implements Serializable {
 
     public void setTimeoutSeconds(Integer timeoutSeconds) {
         this.timeoutSeconds = timeoutSeconds;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Long getCreatedBy() {

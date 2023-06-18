@@ -26,6 +26,9 @@ public class Task extends BaseEntity {
     private Integer timeoutSeconds;
 
     @Column
+    private Integer status;
+
+    @Column
     private Long createdBy;
 
     @Column
@@ -75,6 +78,14 @@ public class Task extends BaseEntity {
 
     public void setTimeoutSeconds(Integer timeoutMinutes) {
         this.timeoutSeconds = timeoutMinutes;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Long getCreatedBy() {
