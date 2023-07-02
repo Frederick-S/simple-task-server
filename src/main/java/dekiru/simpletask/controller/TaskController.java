@@ -50,6 +50,7 @@ public class TaskController extends BaseController {
         Instant now = Instant.now();
         Task task = new Task();
         task.setName(taskDto.getName());
+        task.setDescription(taskDto.getDescription());
         task.setLaunchTemplateId(taskDto.getLaunchTemplateId());
         task.setLaunchTemplateVersion(taskDto.getLaunchTemplateVersion());
         task.setTimeoutSeconds(taskDto.getTimeoutSeconds());
@@ -99,6 +100,7 @@ public class TaskController extends BaseController {
                     TaskDto taskDto = new TaskDto();
                     taskDto.setId(task.getId());
                     taskDto.setName(task.getName());
+                    taskDto.setDescription(task.getDescription());
                     taskDto.setLaunchTemplateId(task.getLaunchTemplateId());
                     taskDto.setLaunchTemplateVersion(task.getLaunchTemplateVersion());
                     taskDto.setTimeoutSeconds(task.getTimeoutSeconds());

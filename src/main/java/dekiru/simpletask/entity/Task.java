@@ -14,6 +14,9 @@ public class Task extends BaseEntity {
     private String name;
 
     @Column
+    private String description;
+
+    @Column
     private String launchTemplateId;
 
     @Column
@@ -46,6 +49,14 @@ public class Task extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getLaunchTemplateId() {

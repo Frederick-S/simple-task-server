@@ -18,6 +18,9 @@ public class TaskDto implements Serializable {
     @Size(max = 100, message = "The length of name could not be longer than 100")
     private String name;
 
+    @Size(max = 255, message = "The length of description could not be longer than 255")
+    private String description;
+
     @NotBlank(message = "launchTemplateId could not be empty")
     @Size(max = 100, message = "The length of launchTemplateId could not be longer than 100")
     private String launchTemplateId;
@@ -59,6 +62,14 @@ public class TaskDto implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getLaunchTemplateId() {

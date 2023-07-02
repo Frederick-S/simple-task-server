@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
   `launch_template_id` varchar(255) NOT NULL,
   `launch_template_version` varchar(20) NOT NULL,
   `startup_script` text NOT NULL,
@@ -63,4 +64,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-18  2:50:09
+-- Dump completed on 2023-07-02  5:02:19
