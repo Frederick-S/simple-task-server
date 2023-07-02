@@ -18,6 +18,7 @@ public class TaskDto implements Serializable {
     @Size(max = 100, message = "The length of name could not be longer than 100")
     private String name;
 
+    @NotBlank(message = "Description could not be empty")
     @Size(max = 255, message = "The length of description could not be longer than 255")
     private String description;
 
@@ -32,7 +33,7 @@ public class TaskDto implements Serializable {
     @NotBlank(message = "startupScript could not be empty")
     private String startupScript;
 
-    @NotBlank(message = "timeoutSeconds could not empty")
+    @NotNull(message = "timeoutSeconds could not null")
     @Min(value = 1, message = "The value of timeoutSeconds should be greater than 0")
     private Integer timeoutSeconds;
 

@@ -53,6 +53,7 @@ public class TaskController extends BaseController {
         task.setDescription(taskDto.getDescription());
         task.setLaunchTemplateId(taskDto.getLaunchTemplateId());
         task.setLaunchTemplateVersion(taskDto.getLaunchTemplateVersion());
+        task.setStartupScript(taskDto.getStartupScript());
         task.setTimeoutSeconds(taskDto.getTimeoutSeconds());
         task.setStatus(taskDto.getStatus());
         task.setCreatedBy(me.getId());
@@ -79,6 +80,7 @@ public class TaskController extends BaseController {
      * @return List of {@link TaskDto}
      */
     @GetMapping("/tasks")
+    @LoginRequired
     public ResponseEntity<?> getTasks(@RequestParam int page, @RequestParam int pageSize) {
         if (page <= 0) {
             return new ResponseEntity<>(new ResponseError("Invalid page"), HttpStatus.BAD_REQUEST);
@@ -103,6 +105,7 @@ public class TaskController extends BaseController {
                     taskDto.setDescription(task.getDescription());
                     taskDto.setLaunchTemplateId(task.getLaunchTemplateId());
                     taskDto.setLaunchTemplateVersion(task.getLaunchTemplateVersion());
+                    taskDto.setStartupScript(task.getStartupScript());
                     taskDto.setTimeoutSeconds(task.getTimeoutSeconds());
                     taskDto.setStatus(task.getStatus());
                     taskDto.setCreatedBy(task.getCreatedBy());
