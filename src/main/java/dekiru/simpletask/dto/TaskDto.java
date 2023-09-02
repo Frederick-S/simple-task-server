@@ -37,8 +37,6 @@ public class TaskDto implements Serializable {
     @Min(value = 1, message = "The value of timeoutSeconds should be greater than 0")
     private Integer timeoutSeconds;
 
-    @NotNull(message = "status could not be null")
-    @Min(value = 1, message = "The value of status should be greater than 0")
     private Integer status;
 
     private Long createdBy;

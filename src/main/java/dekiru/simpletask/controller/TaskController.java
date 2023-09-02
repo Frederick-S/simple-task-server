@@ -7,6 +7,7 @@ import dekiru.simpletask.dto.ResponseError;
 import dekiru.simpletask.dto.TaskDto;
 import dekiru.simpletask.dto.UserDto;
 import dekiru.simpletask.entity.Task;
+import dekiru.simpletask.enums.TaskStatus;
 import dekiru.simpletask.repository.TaskRepository;
 import dekiru.simpletask.repository.extend.TaskRepositoryExtend;
 import jakarta.validation.Valid;
@@ -55,7 +56,7 @@ public class TaskController extends BaseController {
         task.setLaunchTemplateVersion(taskDto.getLaunchTemplateVersion());
         task.setStartupScript(taskDto.getStartupScript());
         task.setTimeoutSeconds(taskDto.getTimeoutSeconds());
-        task.setStatus(taskDto.getStatus());
+        task.setStatus(TaskStatus.DISABLED.getValue());
         task.setCreatedBy(me.getId());
         task.setUpdatedBy(me.getId());
         task.setCreatedAt(now);
@@ -64,6 +65,7 @@ public class TaskController extends BaseController {
         taskRepository.save(task);
 
         taskDto.setId(task.getId());
+        taskDto.setStatus(task.getStatus());
         taskDto.setCreatedBy(me.getId());
         taskDto.setUpdatedBy(me.getId());
         taskDto.setCreatedAt(now);
