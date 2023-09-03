@@ -106,12 +106,16 @@ public class TaskController extends BaseController {
                     new Response<>(new ResponseError(message)), HttpStatus.BAD_REQUEST);
         }
 
+        long count = taskRepository.count();
+        int totalPages = Double.valueOf(Math.ceil((double) count / pageSize)).intValue();
         List<TaskDto> taskDtos = taskRepositoryExtend.findAll(page, pageSize)
                 .stream()
                 .map(TaskDto::fromEntity)
                 .toList();
+        Response<List<TaskDto>> response = new Response<>(taskDtos);
+        response.getMeta().put("totalPages", totalPages);
 
-        return new ResponseEntity<>(new Response<>(taskDtos), HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**
