@@ -3,6 +3,7 @@ package dekiru.simpletask.controller;
 import dekiru.simpletask.Constant;
 import dekiru.simpletask.annotation.LoginRequired;
 import dekiru.simpletask.annotation.Me;
+import dekiru.simpletask.dto.Response;
 import dekiru.simpletask.dto.ResponseError;
 import dekiru.simpletask.dto.TaskDto;
 import dekiru.simpletask.dto.UserDto;
@@ -49,7 +50,9 @@ public class TaskController extends BaseController {
      */
     @PostMapping("/tasks")
     @LoginRequired
-    public ResponseEntity<TaskDto> createTask(@Valid @RequestBody TaskDto taskDto, @Me UserDto me) {
+    public ResponseEntity<Response<TaskDto>> createTask(
+            @Valid @RequestBody TaskDto taskDto, @Me UserDto me) {
+        // TODO: schedule validation
         Instant now = Instant.now();
         Task task = new Task();
         task.setName(taskDto.getName());
@@ -74,7 +77,7 @@ public class TaskController extends BaseController {
         taskDto.setCreatedAt(now);
         taskDto.setUpdatedAt(now);
 
-        return new ResponseEntity<>(taskDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(new Response<>(taskDto), HttpStatus.CREATED);
     }
 
     /**
@@ -86,19 +89,21 @@ public class TaskController extends BaseController {
      */
     @GetMapping("/tasks")
     @LoginRequired
-    public ResponseEntity<?> getTasks(@RequestParam int page, @RequestParam int pageSize) {
+    public ResponseEntity<Response<List<TaskDto>>> getTasks(
+            @RequestParam int page, @RequestParam int pageSize) {
         if (page <= 0) {
-            return new ResponseEntity<>(new ResponseError("Invalid page"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new Response<>(new ResponseError("Invalid page")), HttpStatus.BAD_REQUEST);
         }
 
         if (pageSize <= 0) {
             return new ResponseEntity<>(
-                    new ResponseError("Invalid pageSize"), HttpStatus.BAD_REQUEST);
+                    new Response<>(new ResponseError("Invalid pageSize")), HttpStatus.BAD_REQUEST);
         } else if (pageSize > Constant.MAX_PAGE_SIZE) {
+            String message = String.format("pageSize exceeds the limit %d", Constant.MAX_PAGE_SIZE);
+
             return new ResponseEntity<>(
-                    new ResponseError(
-                            String.format("pageSize exceeds the limit %d", Constant.MAX_PAGE_SIZE)),
-                    HttpStatus.BAD_REQUEST);
+                    new Response<>(new ResponseError(message)), HttpStatus.BAD_REQUEST);
         }
 
         List<TaskDto> taskDtos = taskRepositoryExtend.findAll(page, pageSize)
@@ -106,7 +111,7 @@ public class TaskController extends BaseController {
                 .map(TaskDto::fromEntity)
                 .toList();
 
-        return new ResponseEntity<>(taskDtos, HttpStatus.OK);
+        return new ResponseEntity<>(new Response<>(taskDtos), HttpStatus.OK);
     }
 
     /**
@@ -117,15 +122,16 @@ public class TaskController extends BaseController {
      */
     @GetMapping("/tasks/{id}")
     @LoginRequired
-    public ResponseEntity<?> getTask(@PathVariable long id) {
+    public ResponseEntity<Response<TaskDto>> getTask(@PathVariable long id) {
         Optional<Task> optionalTask = taskRepository.findById(id);
 
         if (optionalTask.isEmpty()) {
-            return new ResponseEntity<>(new ResponseError("Task not found"),
+            return new ResponseEntity<>(new Response<>(new ResponseError("Task not found")),
                     HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(TaskDto.fromEntity(optionalTask.get()), HttpStatus.OK);
+        return new ResponseEntity<>(new Response<>(TaskDto.fromEntity(optionalTask.get())),
+                HttpStatus.OK);
     }
 
     /**
@@ -136,7 +142,7 @@ public class TaskController extends BaseController {
      */
     @PostMapping("/tasks/{id}/enable")
     @LoginRequired
-    public ResponseEntity<?> enableTask(@PathVariable long id) {
+    public ResponseEntity<Response<Void>> enableTask(@PathVariable long id) {
         return null;
     }
 
@@ -148,7 +154,7 @@ public class TaskController extends BaseController {
      */
     @PostMapping("/tasks/{id}/disable")
     @LoginRequired
-    public ResponseEntity<?> disableTask(@PathVariable long id) {
+    public ResponseEntity<Response<Void>> disableTask(@PathVariable long id) {
         return null;
     }
 }

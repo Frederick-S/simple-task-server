@@ -2,6 +2,7 @@ package dekiru.simpletask.controller;
 
 import dekiru.simpletask.Constant;
 import dekiru.simpletask.annotation.LoginRequired;
+import dekiru.simpletask.dto.Response;
 import dekiru.simpletask.dto.ResponseError;
 import dekiru.simpletask.dto.UserDto;
 import dekiru.simpletask.dto.UserLoginRequest;
@@ -40,19 +41,20 @@ public class AuthController extends BaseController {
      * @return Current user
      */
     @PostMapping("/auth/login")
-    public ResponseEntity<?> login(
+    public ResponseEntity<Response<UserDto>> login(
             @Valid @RequestBody UserLoginRequest userLoginRequest, HttpSession session) {
         User user = userRepository.findByName(userLoginRequest.getName());
 
         if (user == null) {
             return new ResponseEntity<>(
-                    new ResponseError("User doesn't exist"), HttpStatus.NOT_FOUND);
+                    new Response<>(new ResponseError("User doesn't exist")), HttpStatus.NOT_FOUND);
         }
 
         if (!passwordService.matches(
                 userLoginRequest.getPassword(), user.getEncryptedPassword())) {
             return new ResponseEntity<>(
-                    new ResponseError("Invalid user name or password"), HttpStatus.BAD_REQUEST);
+                    new Response<>(new ResponseError("Invalid user name or password")),
+                    HttpStatus.BAD_REQUEST);
         }
 
         UserDto userDto = new UserDto();
@@ -61,7 +63,7 @@ public class AuthController extends BaseController {
 
         session.setAttribute(Constant.ME, userDto);
 
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+        return new ResponseEntity<>(new Response<>(userDto), HttpStatus.OK);
     }
 
     /**
@@ -72,7 +74,7 @@ public class AuthController extends BaseController {
      */
     @PostMapping("/auth/signOut")
     @LoginRequired
-    public ResponseEntity<Void> signOut(HttpSession session) {
+    public ResponseEntity<Response<Void>> signOut(HttpSession session) {
         UserDto user = (UserDto) session.getAttribute(Constant.ME);
 
         if (user != null) {
