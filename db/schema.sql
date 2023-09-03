@@ -30,6 +30,7 @@ CREATE TABLE `task` (
   `launch_template_version` varchar(20) NOT NULL,
   `startup_script` text NOT NULL,
   `timeout_seconds` int NOT NULL,
+  `schedule` varchar(255) NOT NULL,
   `status` int NOT NULL,
   `created_by` bigint NOT NULL,
   `updated_by` bigint NOT NULL,

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,6 +57,7 @@ public class TaskController extends BaseController {
         task.setLaunchTemplateVersion(taskDto.getLaunchTemplateVersion());
         task.setStartupScript(taskDto.getStartupScript());
         task.setTimeoutSeconds(taskDto.getTimeoutSeconds());
+        task.setSchedule(taskDto.getSchedule());
         task.setStatus(TaskStatus.DISABLED.getValue());
         task.setCreatedBy(me.getId());
         task.setUpdatedBy(me.getId());
@@ -109,6 +111,7 @@ public class TaskController extends BaseController {
                     taskDto.setLaunchTemplateVersion(task.getLaunchTemplateVersion());
                     taskDto.setStartupScript(task.getStartupScript());
                     taskDto.setTimeoutSeconds(task.getTimeoutSeconds());
+                    taskDto.setSchedule(task.getSchedule());
                     taskDto.setStatus(task.getStatus());
                     taskDto.setCreatedBy(task.getCreatedBy());
                     taskDto.setUpdatedBy(task.getUpdatedBy());
@@ -120,5 +123,23 @@ public class TaskController extends BaseController {
                 .toList();
 
         return new ResponseEntity<>(taskDtos, HttpStatus.OK);
+    }
+
+    /**
+     * Enable a task.
+     */
+    @PostMapping("/tasks/{id}/enable")
+    @LoginRequired
+    public ResponseEntity<?> enableTask(@PathVariable long id) {
+        return null;
+    }
+
+    /**
+     * Disable a task.
+     */
+    @PostMapping("/tasks/{id}/disable")
+    @LoginRequired
+    public ResponseEntity<?> disableTask(@PathVariable long id) {
+        return null;
     }
 }

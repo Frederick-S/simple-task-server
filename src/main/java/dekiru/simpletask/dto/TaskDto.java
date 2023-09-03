@@ -37,6 +37,9 @@ public class TaskDto implements Serializable {
     @Min(value = 1, message = "The value of timeoutSeconds should be greater than 0")
     private Integer timeoutSeconds;
 
+    @NotBlank(message = "schedule could not be empty")
+    private String schedule;
+
     private Integer status;
 
     private Long createdBy;
@@ -101,6 +104,14 @@ public class TaskDto implements Serializable {
 
     public void setTimeoutSeconds(Integer timeoutSeconds) {
         this.timeoutSeconds = timeoutSeconds;
+    }
+
+    public String getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
     }
 
     public Integer getStatus() {

@@ -29,6 +29,9 @@ public class Task extends BaseEntity {
     private Integer timeoutSeconds;
 
     @Column
+    private String schedule;
+
+    @Column
     private Integer status;
 
     @Column
@@ -89,6 +92,14 @@ public class Task extends BaseEntity {
 
     public void setTimeoutSeconds(Integer timeoutMinutes) {
         this.timeoutSeconds = timeoutMinutes;
+    }
+
+    public String getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
     }
 
     public Integer getStatus() {
