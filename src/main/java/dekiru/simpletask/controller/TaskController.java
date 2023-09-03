@@ -170,6 +170,18 @@ public class TaskController extends BaseController {
     @PostMapping("/tasks/{id}/enable")
     @LoginRequired
     public ResponseEntity<Response<Void>> enableTask(@PathVariable long id) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+
+        if (optionalTask.isEmpty()) {
+            return new ResponseEntity<>(new Response<>(new ResponseError("Task not found")),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        // TODO: validate
+        Task task = optionalTask.get();
+        task.setStatus(TaskStatus.ENABLED.getValue());
+        taskRepository.save(task);
+
         return new ResponseEntity<>(new Response<>(null), HttpStatus.OK);
     }
 
@@ -182,6 +194,18 @@ public class TaskController extends BaseController {
     @PostMapping("/tasks/{id}/disable")
     @LoginRequired
     public ResponseEntity<Response<Void>> disableTask(@PathVariable long id) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+
+        if (optionalTask.isEmpty()) {
+            return new ResponseEntity<>(new Response<>(new ResponseError("Task not found")),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        // TODO: validate
+        Task task = optionalTask.get();
+        task.setStatus(TaskStatus.DISABLED.getValue());
+        taskRepository.save(task);
+
         return new ResponseEntity<>(new Response<>(null), HttpStatus.OK);
     }
 }
