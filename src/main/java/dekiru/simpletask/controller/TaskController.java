@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -139,6 +140,28 @@ public class TaskController extends BaseController {
     }
 
     /**
+     * Delete task by id.
+     *
+     * @param id Id of task.
+     * @return {@link Void}
+     */
+    @DeleteMapping("/tasks/{id}")
+    @LoginRequired
+    public ResponseEntity<Response<Void>> deleteTask(@PathVariable long id) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+
+        if (optionalTask.isEmpty()) {
+            return new ResponseEntity<>(new Response<>(new ResponseError("Task not found")),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        // TODO: deletable?
+        taskRepository.deleteById(id);
+
+        return new ResponseEntity<>(new Response<>(null), HttpStatus.OK);
+    }
+
+    /**
      * Enable a task.
      *
      * @param id Id of task.
@@ -147,7 +170,7 @@ public class TaskController extends BaseController {
     @PostMapping("/tasks/{id}/enable")
     @LoginRequired
     public ResponseEntity<Response<Void>> enableTask(@PathVariable long id) {
-        return null;
+        return new ResponseEntity<>(new Response<>(null), HttpStatus.OK);
     }
 
     /**
@@ -159,6 +182,6 @@ public class TaskController extends BaseController {
     @PostMapping("/tasks/{id}/disable")
     @LoginRequired
     public ResponseEntity<Response<Void>> disableTask(@PathVariable long id) {
-        return null;
+        return new ResponseEntity<>(new Response<>(null), HttpStatus.OK);
     }
 }

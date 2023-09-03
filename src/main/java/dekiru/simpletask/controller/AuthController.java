@@ -82,6 +82,6 @@ public class AuthController extends BaseController {
             sessionRepository.deleteById(session.getId());
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new Response<>(null), HttpStatus.OK);
     }
 }
