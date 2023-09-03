@@ -1,6 +1,7 @@
 package dekiru.simpletask.controller;
 
 import dekiru.simpletask.Constant;
+import dekiru.simpletask.annotation.LoginRequired;
 import dekiru.simpletask.dto.ResponseError;
 import dekiru.simpletask.dto.UserDto;
 import dekiru.simpletask.dto.UserLoginRequest;
@@ -70,6 +71,7 @@ public class AuthController extends BaseController {
      * @return {@link Void}
      */
     @PostMapping("/auth/signOut")
+    @LoginRequired
     public ResponseEntity<Void> signOut(HttpSession session) {
         UserDto user = (UserDto) session.getAttribute(Constant.ME);
 

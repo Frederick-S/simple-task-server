@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The api routes for tasks.
@@ -102,31 +103,36 @@ public class TaskController extends BaseController {
 
         List<TaskDto> taskDtos = taskRepositoryExtend.findAll(page, pageSize)
                 .stream()
-                .map(task -> {
-                    TaskDto taskDto = new TaskDto();
-                    taskDto.setId(task.getId());
-                    taskDto.setName(task.getName());
-                    taskDto.setDescription(task.getDescription());
-                    taskDto.setLaunchTemplateId(task.getLaunchTemplateId());
-                    taskDto.setLaunchTemplateVersion(task.getLaunchTemplateVersion());
-                    taskDto.setStartupScript(task.getStartupScript());
-                    taskDto.setTimeoutSeconds(task.getTimeoutSeconds());
-                    taskDto.setSchedule(task.getSchedule());
-                    taskDto.setStatus(task.getStatus());
-                    taskDto.setCreatedBy(task.getCreatedBy());
-                    taskDto.setUpdatedBy(task.getUpdatedBy());
-                    taskDto.setCreatedAt(task.getCreatedAt());
-                    taskDto.setUpdatedAt(task.getUpdatedAt());
-
-                    return taskDto;
-                })
+                .map(TaskDto::fromEntity)
                 .toList();
 
         return new ResponseEntity<>(taskDtos, HttpStatus.OK);
     }
 
     /**
+     * Get task by id.
+     *
+     * @param id Id of task.
+     * @return {@link TaskDto}
+     */
+    @GetMapping("/tasks/{id}")
+    @LoginRequired
+    public ResponseEntity<?> getTask(@PathVariable long id) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+
+        if (optionalTask.isEmpty()) {
+            return new ResponseEntity<>(new ResponseError("Task not found"),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(TaskDto.fromEntity(optionalTask.get()), HttpStatus.OK);
+    }
+
+    /**
      * Enable a task.
+     *
+     * @param id Id of task.
+     * @return {@link Void}
      */
     @PostMapping("/tasks/{id}/enable")
     @LoginRequired
@@ -136,6 +142,9 @@ public class TaskController extends BaseController {
 
     /**
      * Disable a task.
+     *
+     * @param id Id of task.
+     * @return {@link Void}
      */
     @PostMapping("/tasks/{id}/disable")
     @LoginRequired

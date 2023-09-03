@@ -1,5 +1,6 @@
 package dekiru.simpletask.dto;
 
+import dekiru.simpletask.entity.Task;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -152,5 +153,30 @@ public class TaskDto implements Serializable {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    /**
+     * Create {@link TaskDto} from {@link Task} entity.
+     *
+     * @param task The {@link Task} entity.
+     * @return {@link TaskDto}
+     */
+    public static TaskDto fromEntity(Task task) {
+        TaskDto taskDto = new TaskDto();
+        taskDto.setId(task.getId());
+        taskDto.setName(task.getName());
+        taskDto.setDescription(task.getDescription());
+        taskDto.setLaunchTemplateId(task.getLaunchTemplateId());
+        taskDto.setLaunchTemplateVersion(task.getLaunchTemplateVersion());
+        taskDto.setStartupScript(task.getStartupScript());
+        taskDto.setTimeoutSeconds(task.getTimeoutSeconds());
+        taskDto.setSchedule(task.getSchedule());
+        taskDto.setStatus(task.getStatus());
+        taskDto.setCreatedBy(task.getCreatedBy());
+        taskDto.setUpdatedBy(task.getUpdatedBy());
+        taskDto.setCreatedAt(task.getCreatedAt());
+        taskDto.setUpdatedAt(task.getUpdatedAt());
+
+        return taskDto;
     }
 }
