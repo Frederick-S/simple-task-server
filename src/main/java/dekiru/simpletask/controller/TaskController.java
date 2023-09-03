@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,7 +69,6 @@ public class TaskController extends BaseController {
         task.setUpdatedBy(me.getId());
         task.setCreatedAt(now);
         task.setUpdatedAt(now);
-
         taskRepository.save(task);
 
         taskDto.setId(task.getId());
@@ -140,6 +140,49 @@ public class TaskController extends BaseController {
     }
 
     /**
+     * Update task by id.
+     *
+     * @param id Id of task.
+     * @return {@link TaskDto}
+     */
+    @PutMapping("/tasks/{id}")
+    @LoginRequired
+    public ResponseEntity<Response<TaskDto>> updateTask(
+            @PathVariable long id, @RequestBody TaskDto taskDto, @Me UserDto me) {
+        if (taskDto.getId() != id) {
+            throw new IllegalArgumentException(
+                    "Task id in request body doesn't equal to the id in path");
+        }
+
+        Optional<Task> optionalTask = taskRepository.findById(id);
+
+        if (optionalTask.isEmpty()) {
+            return new ResponseEntity<>(new Response<>(new ResponseError("Task not found")),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        // TODO: editable?
+        // TODO: schedule validation
+        Instant now = Instant.now();
+        Task task = optionalTask.get();
+        task.setName(taskDto.getName());
+        task.setDescription(taskDto.getDescription());
+        task.setLaunchTemplateId(taskDto.getLaunchTemplateId());
+        task.setLaunchTemplateVersion(taskDto.getLaunchTemplateVersion());
+        task.setStartupScript(taskDto.getStartupScript());
+        task.setTimeoutSeconds(taskDto.getTimeoutSeconds());
+        task.setSchedule(taskDto.getSchedule());
+        task.setUpdatedBy(me.getId());
+        task.setUpdatedAt(now);
+        taskRepository.save(task);
+
+        taskDto.setUpdatedBy(task.getUpdatedBy());
+        taskDto.setUpdatedAt(task.getUpdatedAt());
+
+        return new ResponseEntity<>(new Response<>(taskDto), HttpStatus.OK);
+    }
+
+    /**
      * Delete task by id.
      *
      * @param id Id of task.
@@ -169,7 +212,7 @@ public class TaskController extends BaseController {
      */
     @PostMapping("/tasks/{id}/enable")
     @LoginRequired
-    public ResponseEntity<Response<Void>> enableTask(@PathVariable long id) {
+    public ResponseEntity<Response<Void>> enableTask(@PathVariable long id, @Me UserDto me) {
         Optional<Task> optionalTask = taskRepository.findById(id);
 
         if (optionalTask.isEmpty()) {
@@ -180,6 +223,8 @@ public class TaskController extends BaseController {
         // TODO: validate
         Task task = optionalTask.get();
         task.setStatus(TaskStatus.ENABLED.getValue());
+        task.setUpdatedBy(me.getId());
+        task.setUpdatedAt(Instant.now());
         taskRepository.save(task);
 
         return new ResponseEntity<>(new Response<>(null), HttpStatus.OK);
@@ -193,7 +238,7 @@ public class TaskController extends BaseController {
      */
     @PostMapping("/tasks/{id}/disable")
     @LoginRequired
-    public ResponseEntity<Response<Void>> disableTask(@PathVariable long id) {
+    public ResponseEntity<Response<Void>> disableTask(@PathVariable long id, @Me UserDto me) {
         Optional<Task> optionalTask = taskRepository.findById(id);
 
         if (optionalTask.isEmpty()) {
@@ -204,6 +249,8 @@ public class TaskController extends BaseController {
         // TODO: validate
         Task task = optionalTask.get();
         task.setStatus(TaskStatus.DISABLED.getValue());
+        task.setUpdatedBy(me.getId());
+        task.setUpdatedAt(Instant.now());
         taskRepository.save(task);
 
         return new ResponseEntity<>(new Response<>(null), HttpStatus.OK);
