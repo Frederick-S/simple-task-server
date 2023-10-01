@@ -1,12 +1,13 @@
 package dekiru.simpletask.controller;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+
 import dekiru.simpletask.BaseTest;
 import dekiru.simpletask.dto.UserLoginRequest;
 import dekiru.simpletask.entity.User;
 import jakarta.servlet.http.Cookie;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -65,12 +66,8 @@ public class AuthControllerTest extends BaseTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/signOut").cookie(cookies))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        String body = mockMvc.perform(MockMvcRequestBuilders.get("/users/me").cookie(cookies))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        Assertions.assertTrue(StringUtils.isBlank(body));
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/me").cookie(cookies))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                .andExpect(content().string(containsString("Please login first")));
     }
 }

@@ -43,7 +43,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
             response.getOutputStream()
-                    .write(this.objectMapper.writeValueAsBytes(new ResponseError("请先登陆")));
+                    .write(this.objectMapper.writeValueAsBytes(
+                            new ResponseError("Please login first")));
 
             return false;
         } else {
