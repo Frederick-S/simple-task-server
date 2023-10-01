@@ -29,6 +29,8 @@ public class Ec2Service {
      * @return Id of the new instance
      */
     public String createInstance(CreateInstanceRequest createInstanceRequest) {
+        createInstanceRequest.validate();
+
         try (Ec2Client ec2Client = Ec2Client.builder()
                 .region(createInstanceRequest.getRegion())
                 .credentialsProvider(DefaultCredentialsProvider.create())
@@ -67,6 +69,8 @@ public class Ec2Service {
      * @param destroyInstanceRequest {@link DestroyInstanceRequest}
      */
     public boolean destroyInstance(DestroyInstanceRequest destroyInstanceRequest) {
+        destroyInstanceRequest.validate();
+
         try (Ec2Client ec2Client = Ec2Client.builder()
                 .region(destroyInstanceRequest.getRegion())
                 .credentialsProvider(DefaultCredentialsProvider.create())

@@ -1,5 +1,7 @@
 package dekiru.simpletask.service.ec2;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import software.amazon.awssdk.regions.Region;
 
 /**
@@ -24,5 +26,13 @@ public class DestroyInstanceRequest {
 
     public void setInstanceId(String instanceId) {
         this.instanceId = instanceId;
+    }
+
+    /**
+     * Validate the fields.
+     */
+    public void validate() {
+        Validate.isTrue(region != null, "Region is required");
+        Validate.isTrue(StringUtils.isNotBlank(instanceId), "Instance id is required");
     }
 }

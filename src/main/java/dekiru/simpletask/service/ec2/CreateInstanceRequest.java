@@ -1,5 +1,7 @@
 package dekiru.simpletask.service.ec2;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import software.amazon.awssdk.regions.Region;
 
 /**
@@ -54,5 +56,17 @@ public class CreateInstanceRequest {
 
     public void setStartupCommand(String startupCommand) {
         this.startupCommand = startupCommand;
+    }
+
+    /**
+     * Validate the fields.
+     */
+    public void validate() {
+        Validate.isTrue(region != null, "Region is required");
+        Validate.isTrue(StringUtils.isNotBlank(name), "Name is required");
+        Validate.isTrue(StringUtils.isNotBlank(launchTemplateId), "Launch template id required");
+        Validate.isTrue(StringUtils.isNotBlank(launchTemplateVersion),
+                "Launch template version required");
+        Validate.isTrue(StringUtils.isNotBlank(startupCommand), "Startup command required");
     }
 }
