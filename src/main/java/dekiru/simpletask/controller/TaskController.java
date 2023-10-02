@@ -59,7 +59,6 @@ public class TaskController extends BaseController {
         Validate.isTrue(CronUtil.isValidCronExpression(taskDto.getSchedule()),
                 "Schedule is not a valid cron expression");
 
-        // TODO: schedule validation
         Instant now = Instant.now();
         Task task = new Task();
         task.setName(taskDto.getName());
@@ -154,9 +153,6 @@ public class TaskController extends BaseController {
     @LoginRequired
     public ResponseEntity<Response<TaskDto>> updateTask(
             @PathVariable long id, @RequestBody TaskDto taskDto, @Me UserDto me) {
-        Validate.isTrue(CronUtil.isValidCronExpression(taskDto.getSchedule()),
-                "Schedule is not a valid cron expression");
-
         if (taskDto.getId() != id) {
             throw new IllegalArgumentException(
                     "Task id in request body doesn't equal to the id in path");
@@ -169,10 +165,13 @@ public class TaskController extends BaseController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // TODO: editable?
-        // TODO: schedule validation
-        Instant now = Instant.now();
         Task task = optionalTask.get();
+        Validate.isTrue(task.getStatus() == TaskStatus.DISABLED.getValue(),
+                "Task cannot be updated when enabled");
+        Validate.isTrue(CronUtil.isValidCronExpression(taskDto.getSchedule()),
+                "Schedule is not a valid cron expression");
+
+        Instant now = Instant.now();
         task.setName(taskDto.getName());
         task.setDescription(taskDto.getDescription());
         task.setLaunchTemplateId(taskDto.getLaunchTemplateId());
@@ -206,7 +205,9 @@ public class TaskController extends BaseController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // TODO: deletable?
+        Task task = optionalTask.get();
+        Validate.isTrue(task.getStatus() == TaskStatus.DISABLED.getValue(),
+                "Task cannot be deleted when enabled");
         taskRepository.deleteById(id);
 
         return new ResponseEntity<>(new Response<>(null), HttpStatus.OK);
@@ -228,9 +229,11 @@ public class TaskController extends BaseController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // TODO: validate
         // TODO: schedule task
         Task task = optionalTask.get();
+        Validate.isTrue(task.getStatus() == TaskStatus.DISABLED.getValue(),
+                "Task is already enabled");
+
         task.setStatus(TaskStatus.ENABLED.getValue());
         task.setUpdatedBy(me.getId());
         task.setUpdatedAt(Instant.now());
@@ -255,9 +258,11 @@ public class TaskController extends BaseController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // TODO: validate
         // TODO: remove task schedule
         Task task = optionalTask.get();
+        Validate.isTrue(task.getStatus() == TaskStatus.ENABLED.getValue(),
+                "Task is already disabled");
+
         task.setStatus(TaskStatus.DISABLED.getValue());
         task.setUpdatedBy(me.getId());
         task.setUpdatedAt(Instant.now());
