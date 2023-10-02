@@ -11,6 +11,7 @@ import dekiru.simpletask.entity.Task;
 import dekiru.simpletask.enums.TaskStatus;
 import dekiru.simpletask.repository.TaskRepository;
 import dekiru.simpletask.repository.extend.TaskRepositoryExtend;
+import dekiru.simpletask.service.TaskService;
 import dekiru.simpletask.util.CronUtil;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.Validate;
@@ -44,6 +45,9 @@ public class TaskController extends BaseController {
 
     @Autowired
     private TaskRepositoryExtend taskRepositoryExtend;
+
+    @Autowired
+    private TaskService taskService;
 
     /**
      * Create a new task.
@@ -222,22 +226,7 @@ public class TaskController extends BaseController {
     @PostMapping("/tasks/{id}/enable")
     @LoginRequired
     public ResponseEntity<Response<Void>> enableTask(@PathVariable long id, @Me UserDto me) {
-        Optional<Task> optionalTask = taskRepository.findById(id);
-
-        if (optionalTask.isEmpty()) {
-            return new ResponseEntity<>(new Response<>(new ResponseError("Task not found")),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        // TODO: schedule task
-        Task task = optionalTask.get();
-        Validate.isTrue(task.getStatus() == TaskStatus.DISABLED.getValue(),
-                "Task is already enabled");
-
-        task.setStatus(TaskStatus.ENABLED.getValue());
-        task.setUpdatedBy(me.getId());
-        task.setUpdatedAt(Instant.now());
-        taskRepository.save(task);
+        taskService.enable(id, me);
 
         return new ResponseEntity<>(new Response<>(null), HttpStatus.OK);
     }
@@ -251,22 +240,7 @@ public class TaskController extends BaseController {
     @PostMapping("/tasks/{id}/disable")
     @LoginRequired
     public ResponseEntity<Response<Void>> disableTask(@PathVariable long id, @Me UserDto me) {
-        Optional<Task> optionalTask = taskRepository.findById(id);
-
-        if (optionalTask.isEmpty()) {
-            return new ResponseEntity<>(new Response<>(new ResponseError("Task not found")),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        // TODO: remove task schedule
-        Task task = optionalTask.get();
-        Validate.isTrue(task.getStatus() == TaskStatus.ENABLED.getValue(),
-                "Task is already disabled");
-
-        task.setStatus(TaskStatus.DISABLED.getValue());
-        task.setUpdatedBy(me.getId());
-        task.setUpdatedAt(Instant.now());
-        taskRepository.save(task);
+        taskService.disable(id, me);
 
         return new ResponseEntity<>(new Response<>(null), HttpStatus.OK);
     }
