@@ -11,7 +11,9 @@ import dekiru.simpletask.entity.Task;
 import dekiru.simpletask.enums.TaskStatus;
 import dekiru.simpletask.repository.TaskRepository;
 import dekiru.simpletask.repository.extend.TaskRepositoryExtend;
+import dekiru.simpletask.util.CronUtil;
 import jakarta.validation.Valid;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,9 @@ public class TaskController extends BaseController {
     @LoginRequired
     public ResponseEntity<Response<TaskDto>> createTask(
             @Valid @RequestBody TaskDto taskDto, @Me UserDto me) {
+        Validate.isTrue(CronUtil.isValidCronExpression(taskDto.getSchedule()),
+                "Schedule is not a valid cron expression");
+
         // TODO: schedule validation
         Instant now = Instant.now();
         Task task = new Task();
@@ -149,6 +154,9 @@ public class TaskController extends BaseController {
     @LoginRequired
     public ResponseEntity<Response<TaskDto>> updateTask(
             @PathVariable long id, @RequestBody TaskDto taskDto, @Me UserDto me) {
+        Validate.isTrue(CronUtil.isValidCronExpression(taskDto.getSchedule()),
+                "Schedule is not a valid cron expression");
+
         if (taskDto.getId() != id) {
             throw new IllegalArgumentException(
                     "Task id in request body doesn't equal to the id in path");
@@ -221,6 +229,7 @@ public class TaskController extends BaseController {
         }
 
         // TODO: validate
+        // TODO: schedule task
         Task task = optionalTask.get();
         task.setStatus(TaskStatus.ENABLED.getValue());
         task.setUpdatedBy(me.getId());
@@ -247,6 +256,7 @@ public class TaskController extends BaseController {
         }
 
         // TODO: validate
+        // TODO: remove task schedule
         Task task = optionalTask.get();
         task.setStatus(TaskStatus.DISABLED.getValue());
         task.setUpdatedBy(me.getId());
